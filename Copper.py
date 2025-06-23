@@ -17,9 +17,9 @@ import streamlit as st
 
 
 # Load environment variables
-# load_dotenv()
-# openai.api_key = os.getenv("OPENAI_API_KEY")
-openai.api_key = st.secrets["OPENAI_API_KEY"]
+load_dotenv()
+openai.api_key = os.getenv("OPENAI_API_KEY")
+# openai.api_key = st.secrets["OPENAI_API_KEY"]
 
 
 def pdf_to_images(pdf_path: str) -> List[Image.Image]:

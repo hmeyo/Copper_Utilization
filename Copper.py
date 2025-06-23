@@ -13,14 +13,16 @@ from collections import defaultdict
 import csv 
 from datetime import datetime
 from sorting import optimize_by_material, save_cut_plan_csv
-import streamlit as st
 
+try:
+    import streamlit as st
+    openai.api_key = st.secrets["OPENAI_API_KEY"]
+except Exception as e:
+    print("🔒 Failed to read API key from Streamlit secrets:", e)
 
 # Load environment variables
-load_dotenv()
-openai.api_key = os.getenv("OPENAI_API_KEY")
-# openai.api_key = st.secrets["OPENAI_API_KEY"]
-
+# load_dotenv()
+# openai.api_key = os.getenv("OPENAI_API_KEY")
 
 def pdf_to_images(pdf_path: str) -> List[Image.Image]:
     """Convert PDF to high-quality images"""

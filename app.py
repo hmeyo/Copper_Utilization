@@ -7,7 +7,7 @@ from Copper import process_pdf
 from sorting import optimize_by_material, save_cut_plan_csv, save_cut_plan_pdf
 import pandas as pd
 
-openai.api_key = st.secrets["OPENAI_API_KEY"]
+#openai.api_key = st.secrets["OPENAI_API_KEY"]
 
 st.set_page_config(page_title="Copper Cut Plan Optimizer", layout="wide")
 st.title("📄 Copper Cut Plan Optimizer")

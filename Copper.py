@@ -17,8 +17,11 @@ from sorting import optimize_by_material, save_cut_plan_csv
 try:
     import streamlit as st
     openai.api_key = st.secrets["OPENAI_API_KEY"]
-except Exception as e:
-    print("🔒 Failed to read API key from Streamlit secrets:", e)
+except Exception:
+    load_dotenv()
+    openai.api_key = os.getenv("OPENAI_API_KEY"
+if not openai.api_key:
+    raise ValueError("❌ OpenAI API key not found in st.secrets or .env")
 
 # Load environment variables
 # load_dotenv()

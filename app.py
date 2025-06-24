@@ -11,25 +11,6 @@ import pandas as pd
 
 from pdf2image import convert_from_path
 
-def test_poppler():
-    try:
-        # Create a blank PDF for testing
-        from reportlab.pdfgen import canvas
-        test_pdf = "test.pdf"
-        c = canvas.Canvas(test_pdf)
-        c.drawString(100, 100, "TEST PAGE")
-        c.save()
-        
-        # Try conversion
-        images = convert_from_path(test_pdf, poppler_path="poppler/bin")
-        return bool(images)
-    except Exception as e:
-        st.error(f"Poppler test failed: {e}")
-        return False
-
-if st.secrets.get("DEBUG", False):
-    st.write("Poppler test result:", test_poppler())
-
 st.set_page_config(page_title="Copper Cut Plan Optimizer", layout="wide")
 st.title("📄 Copper Cut Plan Optimizer")
 
@@ -38,6 +19,12 @@ uploaded_files = st.file_uploader(
 )
 
 if uploaded_files:
+    MAX_PDF_SIZE = 10 * 1024 * 1024  # 10MB
+    for file in uploaded_files:
+        if file.size > MAX_PDF_SIZE:
+            st.error(f"File {file.name} is too large (max {MAX_PDF_SIZE//1_000_000}MB)")
+            st.stop()
+            
     st.info(f"📥 {len(uploaded_files)} file(s) uploaded. Click 'Submit' to process.")
     if st.button("🚀 Submit"):
 

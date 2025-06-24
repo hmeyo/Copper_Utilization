@@ -14,6 +14,28 @@ import csv
 from datetime import datetime
 from sorting import optimize_by_material, save_cut_plan_csv
 
+# Right after your imports
+from pdf2image import convert_from_path
+
+def test_poppler():
+    try:
+        # Create a blank PDF for testing
+        from reportlab.pdfgen import canvas
+        test_pdf = "test.pdf"
+        c = canvas.Canvas(test_pdf)
+        c.drawString(100, 100, "TEST PAGE")
+        c.save()
+        
+        # Try conversion
+        images = convert_from_path(test_pdf, poppler_path="poppler/bin")
+        return bool(images)
+    except Exception as e:
+        st.error(f"Poppler test failed: {e}")
+        return False
+
+if st.secrets.get("DEBUG", False):
+    st.write("Poppler test result:", test_poppler())
+'''
 try:
     import streamlit as st
     openai.api_key = st.secrets["OPENAI_API_KEY"]
@@ -22,7 +44,7 @@ except Exception:
     openai.api_key = os.getenv("OPENAI_API_KEY")
 if not openai.api_key:
     raise ValueError("❌ OpenAI API key not found in st.secrets or .env")
-
+'''
 # Load environment variables
 # load_dotenv()
 # openai.api_key = os.getenv("OPENAI_API_KEY")

@@ -30,7 +30,7 @@ if not openai.api_key:
 def pdf_to_images(pdf_path: str) -> List[Image.Image]:
     """Convert PDF to high-quality images"""
     try:
-        return convert_from_path(pdf_path, dpi=400, fmt='png')
+        return convert_from_path(pdf_path, dpi=400, fmt='png', poppler_path=os.path.join(os.path.dirname(__file__), "poppler", "bin"))
     except Exception as e:
         print(f"Error converting PDF to images: {str(e)}")
         return []

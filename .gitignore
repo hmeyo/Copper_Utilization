@@ -1,3 +1,5 @@
 # .gitignore
+.env
 secrets.toml
-*.env
+*.key
+__pycache__/

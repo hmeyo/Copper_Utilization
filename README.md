@@ -1,19 +1,31 @@
-# Copper_Utilization
+# ⚙️ Copper Utilization
 
-The Copper Cut plan program is a Streamlit-based web application designed to automate and optimize copper bar cutting from MIPs. 
+**Copper Cut Plan Optimizer** is a **Streamlit-based web application** designed to automate and optimize **copper bar cutting** from MIPs and transformer engineering BOM PDFs.
 
-The program extracts part data from engineering drawing PDFs using OpenAI's GPT-40 vision capabilities, classifies parts into categories (cuttable, KANBAN, and others) and generate optimized cut plans to minimize copper waste. The output included intereative visualization as well as downloadable CSV and PDF cut sheet. 
+The program extracts part data from engineering drawing PDFs using **OpenAI’s GPT-4o vision model**, classifies parts into categories (cuttable, KANBAN, and others), and generates **optimized cut plans** to **minimize copper waste**. It displays results interactively and provides **downloadable CSV and PDF cut sheets**.
 
-📌 Features
-  -🧠 Extracts part tables from engineering PDFs using GPT-4o (OpenAI)
-  
-  -🔍 Automatically groups by material type
-  
-  -✂️ Optimizes copper bar cuts to minimize waste (bin-packing)
-  
-  -📦 Separates KANBAN and non-cuttable parts
-  
-  -📄 Outputs interactive tables + downloadable CSV & PDF files
-  
-  -🌐 Upload one or multiple PDFs and process them all at once
+---
 
+## 📌 Features
+
+- 🧠 **AI-Powered Table Extraction**  
+  Extracts part tables from engineering PDFs using OpenAI GPT-4o vision.
+
+- 🔍 **Material-Based Grouping**  
+  Automatically groups parts by material type (e.g., 1/4 X 2 BARE CU).
+
+- ✂️ **Copper Cut Optimization**  
+  Uses a bin-packing algorithm to optimize cuts from standard 144" bars.
+
+- 📦 **KANBAN + Non-Cuttable Handling**  
+  Separates out parts with KANBAN remarks or missing size fields.
+
+- 📄 **Clean Output Files**  
+  Interactive results table with export to **CSV** and **PDF** cut plans.
+
+- 🌐 **Multi-PDF Support**  
+  Upload and process multiple PDF files in one session.
+
+---
+
+This tool helps production teams generate accurate, efficient copper cut plans **in seconds**, improving material utilization and reducing manual effort.

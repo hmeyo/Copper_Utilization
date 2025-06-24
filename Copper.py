@@ -30,7 +30,7 @@ except Exception as e:
 # Load environment variables
 # load_dotenv()
 # openai.api_key = os.getenv("OPENAI_API_KEY")
-
+'''
 def pdf_to_images(pdf_path):
     try:
         # First try system poppler
@@ -39,6 +39,35 @@ def pdf_to_images(pdf_path):
         # Fallback to local poppler
         poppler_path = os.path.abspath(os.path.join("poppler", "bin"))
         return convert_from_path(pdf_path, dpi=300, poppler_path=poppler_path)
+'''
+
+def pdf_to_images(pdf_path: str) -> List[Image.Image]:
+    """Universal PDF converter for Streamlit Cloud"""
+    try:
+        # First try default Linux poppler
+        images = convert_from_path(
+            pdf_path,
+            dpi=300,  # Lower DPI for cloud memory limits
+            fmt='jpeg',  # Smaller than PNG
+            thread_count=2
+        )
+        if images:
+            return images
+            
+        # Fallback for corrupted PDFs
+        from pdf2image.exceptions import PDFInfoNotInstalledError
+        try:
+            return convert_from_path(pdf_path, use_pdftocairo=True)
+        except PDFInfoNotInstalledError:
+            st.error("""
+            Poppler missing on server. Contact Streamlit support with:
+            'My app needs poppler-utils installed system-wide'
+            """)
+            return []
+            
+    except Exception as e:
+        st.error(f"PDF conversion error: {str(e)}")
+        return []
 
 def process_pdf(pdf_path: str) -> Tuple[List[Dict], List[Dict]]:
     """Process a PDF file and extract part data"""

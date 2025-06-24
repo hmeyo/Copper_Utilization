@@ -1,6 +1,6 @@
 # ⚙️ Copper Utilization
 
-**Copper Cut Plan Optimizer** is a **Streamlit-based web application** designed to automate and optimize **copper bar cutting** from MIPs and transformer engineering BOM PDFs.
+**Copper Cut Plan Optimizer** is a **Streamlit-based web application** designed to automate and optimize **copper bar cutting** from MIPs.
 
 The program extracts part data from engineering drawing PDFs using **OpenAI’s GPT-4o vision model**, classifies parts into categories (cuttable, KANBAN, and others), and generates **optimized cut plans** to **minimize copper waste**. It displays results interactively and provides **downloadable CSV and PDF cut sheets**.
 

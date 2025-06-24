@@ -31,13 +31,14 @@ except Exception as e:
 # load_dotenv()
 # openai.api_key = os.getenv("OPENAI_API_KEY")
 
-def pdf_to_images(pdf_path: str) -> List[Image.Image]:
-    """Convert PDF to high-quality images"""
+def pdf_to_images(pdf_path):
     try:
-        return convert_from_path(pdf_path, dpi=400, fmt='png', poppler_path=os.path.join(os.path.dirname(__file__), "poppler", "bin"))
-    except Exception as e:
-        print(f"Error converting PDF to images: {str(e)}")
-        return []
+        # First try system poppler
+        return convert_from_path(pdf_path, dpi=300)
+    except:
+        # Fallback to local poppler
+        poppler_path = os.path.abspath(os.path.join("poppler", "bin"))
+        return convert_from_path(pdf_path, dpi=300, poppler_path=poppler_path)
 
 def process_pdf(pdf_path: str) -> Tuple[List[Dict], List[Dict]]:
     """Process a PDF file and extract part data"""

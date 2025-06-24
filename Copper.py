@@ -19,7 +19,7 @@ try:
     openai.api_key = st.secrets["OPENAI_API_KEY"]
 except Exception:
     load_dotenv()
-    openai.api_key = os.getenv("OPENAI_API_KEY"
+    openai.api_key = os.getenv("OPENAI_API_KEY")
 if not openai.api_key:
     raise ValueError("❌ OpenAI API key not found in st.secrets or .env")
 

@@ -1,5 +1,3 @@
-#Use this Copper.py script to extract it works 
-
 import os
 from dotenv import load_dotenv
 from pdf2image import convert_from_path
@@ -14,7 +12,6 @@ import csv
 from datetime import datetime
 from sorting import optimize_by_material, save_cut_plan_csv
 
-# In Copper.py (Streamlit Cloud only version)
 try:
     import streamlit as st
     openai.api_key = st.secrets["OPENAI_API_KEY"]

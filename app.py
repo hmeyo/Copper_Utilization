@@ -9,6 +9,27 @@ import pandas as pd
 
 #openai.api_key = st.secrets["OPENAI_API_KEY"]
 
+from pdf2image import convert_from_path
+
+def test_poppler():
+    try:
+        # Create a blank PDF for testing
+        from reportlab.pdfgen import canvas
+        test_pdf = "test.pdf"
+        c = canvas.Canvas(test_pdf)
+        c.drawString(100, 100, "TEST PAGE")
+        c.save()
+        
+        # Try conversion
+        images = convert_from_path(test_pdf, poppler_path="poppler/bin")
+        return bool(images)
+    except Exception as e:
+        st.error(f"Poppler test failed: {e}")
+        return False
+
+if st.secrets.get("DEBUG", False):
+    st.write("Poppler test result:", test_poppler())
+
 st.set_page_config(page_title="Copper Cut Plan Optimizer", layout="wide")
 st.title("📄 Copper Cut Plan Optimizer")
 

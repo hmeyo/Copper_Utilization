@@ -42,31 +42,16 @@ def pdf_to_images(pdf_path):
 '''
 
 def pdf_to_images(pdf_path: str) -> List[Image.Image]:
-    """Universal PDF converter for Streamlit Cloud"""
+    """PDF to image conversion using system poppler"""
     try:
-        # First try default Linux poppler
-        images = convert_from_path(
+        return convert_from_path(
             pdf_path,
-            dpi=300,  # Lower DPI for cloud memory limits
-            fmt='jpeg',  # Smaller than PNG
-            thread_count=2
+            dpi=300,  # Optimal balance of quality/speed
+            fmt='jpeg',  # Smaller files than PNG
+            thread_count=4  # Parallel processing
         )
-        if images:
-            return images
-            
-        # Fallback for corrupted PDFs
-        from pdf2image.exceptions import PDFInfoNotInstalledError
-        try:
-            return convert_from_path(pdf_path, use_pdftocairo=True)
-        except PDFInfoNotInstalledError:
-            st.error("""
-            Poppler missing on server. Contact Streamlit support with:
-            'My app needs poppler-utils installed system-wide'
-            """)
-            return []
-            
     except Exception as e:
-        st.error(f"PDF conversion error: {str(e)}")
+        st.error(f"PDF conversion failed: {str(e)}")
         return []
 
 def process_pdf(pdf_path: str) -> Tuple[List[Dict], List[Dict]]:

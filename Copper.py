@@ -14,14 +14,18 @@ import csv
 from datetime import datetime
 from sorting import optimize_by_material, save_cut_plan_csv
 
+# In Copper.py (Streamlit Cloud only version)
 try:
     import streamlit as st
     openai.api_key = st.secrets["OPENAI_API_KEY"]
-except Exception:
-    load_dotenv()
-    openai.api_key = os.getenv("OPENAI_API_KEY")
-if not openai.api_key:
-    raise ValueError("❌ OpenAI API key not found in st.secrets or .env")
+except Exception as e:
+    st.error("""
+        OpenAI API key not found in Streamlit Secrets. 
+        For public repos, configure keys via:
+        App Settings → Secrets (⚙️) → Add OPENAI_API_KEY
+        """)
+    st.stop()  # Halt execution
+
     
 # Load environment variables
 # load_dotenv()

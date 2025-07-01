@@ -7,29 +7,40 @@ from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 
 
-def optimize_cut_plan(sizes: List[float], quantities: List[int], mtgs: List[str], master_length: float) -> List[Tuple[List[Tuple[float, str, str, str]], float]]:
+# Best-Fit Decreasing Algorithm (Greedy bin packing)
+def optimize_cut_plan( sizes: List[Tuple[float, str, str]], quantities: List[int], mtgs: List[str], master_length: float) -> List[Tuple[List[Tuple[float, str, str, str]], float]]:
+    
+    # 1. Expand parts with quantities
     full_sizes = []
-    for size, qty, mtg in zip(sizes, quantities, mtgs):
-        full_sizes.extend([(size[0], mtg, size[1], size[2])] * qty)
-
+    for (size, part_name, part_no), qty, mtg in zip(sizes, quantities, mtgs):
+        full_sizes.extend([(size, mtg, part_name, part_no)] * qty)
+    
+    # 2. Sort in descending order (critical for BFD)
     full_sizes.sort(reverse=True, key=lambda x: x[0])
+    
+    # 3. Best-Fit Decreasing Algorithm
     cut_plans = []
-
-    while full_sizes:
-        current_length = master_length
-        cuts = []
-        remaining = []
-
-        for size, mtg, part_name, part_no in full_sizes:
-            if size <= current_length:
-                cuts.append((size, mtg, part_name, part_no))
-                current_length -= size
-            else:
-                remaining.append((size, mtg, part_name, part_no))
-
-        cut_plans.append((cuts, master_length - current_length))
-        full_sizes = remaining
-
+    
+    for item in full_sizes:
+        size, mtg, part_name, part_no = item
+        best_bin = None
+        min_remaining = master_length  # Track smallest remaining space
+        
+        # Check existing bins for the best fit
+        for i, (cuts, used) in enumerate(cut_plans):
+            remaining = master_length - used
+            if size <= remaining and remaining < min_remaining:
+                min_remaining = remaining
+                best_bin = i
+        
+        # Place the item in the best bin (or start a new one)
+        if best_bin is not None:
+            cuts, used = cut_plans[best_bin]
+            cuts.append(item)
+            cut_plans[best_bin] = (cuts, used + size)
+        else:
+            cut_plans.append(([item], size))
+    
     return cut_plans
 
 def optimize_by_material(part_data: List[Dict], master_length: float = 144.0) -> Dict[str, List[Tuple[List[Tuple[float, str, str, str]], float]]]:

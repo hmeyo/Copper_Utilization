@@ -6,7 +6,7 @@ from datetime import datetime
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 
-
+'''
 # Best-Fit Decreasing Algorithm (Greedy bin packing)
 def optimize_cut_plan( sizes: List[Tuple[float, str, str]], quantities: List[int], mtgs: List[str], master_length: float) -> List[Tuple[List[Tuple[float, str, str, str]], float]]:
     
@@ -42,6 +42,56 @@ def optimize_cut_plan( sizes: List[Tuple[float, str, str]], quantities: List[int
             cut_plans.append(([item], size))
     
     return cut_plans
+'''
+def optimize_cut_plan( sizes: List[Tuple[float, str, str]], quantities: List[int], mtgs: List[str], master_length: float) -> List[Tuple[List[Tuple[float, str, str, str]], float]]:
+    # Prepare input
+    full_parts = []
+    for (size, name, part_no), qty, mtg in zip(sizes, quantities, mtgs):
+        full_parts.extend([(size, mtg, name, part_no)] * qty)
+
+    multiplier = 100
+    int_parts = [(int(s * multiplier), mtg, name, part_no) for s, mtg, name, part_no in full_parts]
+    int_lengths = [p[0] for p in int_parts]
+    int_bar_length = int(master_length * multiplier)
+
+    num_items = len(int_parts)
+    num_bins = num_items  # worst case
+
+    model = cp_model.CpModel()
+
+    x = {}
+    for i in range(num_items):
+        for j in range(num_bins):
+            x[i, j] = model.NewBoolVar(f'x_{i}_{j}')
+    y = [model.NewBoolVar(f'y_{j}') for j in range(num_bins)]
+
+    for i in range(num_items):
+        model.Add(sum(x[i, j] for j in range(num_bins)) == 1)
+
+    for j in range(num_bins):
+        model.Add(
+            sum(x[i, j] * int_lengths[i] for i in range(num_items)) <= int_bar_length
+        )
+        for i in range(num_items):
+            model.AddImplication(x[i, j], y[j])
+
+    model.Minimize(sum(y))
+    solver = cp_model.CpSolver()
+    solver.parameters.max_time_in_seconds = 30.0
+    status = solver.Solve(model)
+
+    bins = [[] for _ in range(num_bins)]
+    if status in [cp_model.OPTIMAL, cp_model.FEASIBLE]:
+        for i in range(num_items):
+            for j in range(num_bins):
+                if solver.Value(x[i, j]):
+                    bins[j].append(full_parts[i])
+        bins = [(b, sum(x[0] for x in b)) for b in bins if b]
+    else:
+        print("❌ No feasible solution found.")
+        bins = []
+
+    return bins
 
 def optimize_by_material(part_data: List[Dict], master_length: float = 144.0) -> Dict[str, List[Tuple[List[Tuple[float, str, str, str]], float]]]:
     grouped = defaultdict(lambda: {'sizes': [], 'quantities': [], 'mtgs': []})
